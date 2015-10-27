@@ -160,8 +160,8 @@
 %	NAME AND CLASS SECTION
 %----------------------------------------------------------------------------------------
 
-\newcommand{\hmwkTitle}{Homework\ \#6} % Assignment title
-\newcommand{\hmwkDueDate}{Thursday,\ October\ 22,\ 2015} % Due date
+\newcommand{\hmwkTitle}{Homework\ \#7} % Assignment title
+\newcommand{\hmwkDueDate}{Tuesday,\ October\ 27,\ 2015} % Due date
 \newcommand{\hmwkClass}{CSC 514: Computer Vision} % Course/class
 \newcommand{\hmwkClassTime}{11:00am} % Class/lecture time
 \newcommand{\hmwkClassInstructor}{Hoover} % Teacher/lecturer
@@ -205,20 +205,18 @@
 % To have just one problem per page, simply put a \clearpage after each problem
 
 \begin{homeworkProblem}
-In class we discussed several different methods for performing filtering/template matching on images. In this homework you will create your own Matlab functions to perform both convolution and correlation on images using different convolution/correlation kernels.
+Using your functions developed in Homework 6 to computer convolution and correlation of images
+with a specified kernel, in this homework you will develop a function to compute the edges of an input
+image. Your function will take as input an image and a kernel and output an edge map of the input
+image. You may want to create a second function to return the kernel based on use input (i.e., Roberts,
+Sobel, Prewet, and Gaussian). In addition, you will want your output image to be the same size as the
+input image, therefore, you’ll need to deal with the edges accordingly and document in your write-up.
 
 \section{Preface}
-Before we can answer \textit{Where's Waldo}, we must first ask the question, \textit{Who} is Waldo? \\
-\textit{Where's Wally?}, also known as \textit{Where's Waldo} in the United States and Canada, is a children's book series created by English Illustrator Martin Handford. The books consist of double-paged illustrations containing hundreds of persons in a given location. In each scene, Waldo is hidden amongst the group, wearing his signature red and white striped shirt, bobble hat, and spectacles. \textit{(source: Wikipedia)}
-
-This assignment involves automating the process of finding Waldo in a Where's Waldo scene. This will be done using correlation to match features in two different images.
+Preface Text
 
 \section{Equations}
-The two equations being used for this assignment are the Correlation and Convolution equations. \\ \\
-\textbf{Correlation:} $$G\Big[ i , j \Big] = \sum\limits_{u=-k}^{k} \sum\limits_{v=-k}^{k} H\Big[ u , v \Big]F\Big[ i + u , j + v \Big]$$ \\
-
-Where $F$ is the image and $H$ is the kernel. \\
-This is referred to as cross-correlation. In Image filtering, convolution is performed by replacing each pixel with a linear combination of its neighbors. Then, the \textit{filter} (interchangeably referred to as a \textit{kernel} or \textit{mask} henceforth) is used to describe the weights in the linear combination. For any given pixel in the image, the greater the intensity value after this correlation filter is applied, the closer that pixel is in relation to the kernel image. Figure~\ref{fig:surf} details the intensity map generated from performing cross correlation on the Waldo Scene and Waldo Kernel.
+This assignment once again utilizes the Convolution equation. \\ \\
 
 \textbf{Convolution:} $$G\Big[ i , j \Big] = \sum\limits_{u=-k}^{k} \sum\limits_{v=-k}^{k} H\Big[ u , v \Big]F\Big[ i - u , j - v \Big]$$ \\
 
@@ -227,51 +225,13 @@ Convolution can actually be performed using Correlation. Flip the kernel in both
 
 \section{Process}
 
-The following is the process used to find Waldo.
+The following is the process used to find the edges.
 \begin{itemize}
-	\item Read in the Kernel and Scene Images
-	
-	\begin{figure}
-\centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=.05\linewidth]{img/WaldoKernel}
-  \caption{Image Kernel}
-  \label{fig:sub1}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=.95\linewidth]{img/WaldoScene}
-  \caption{Waldo Scene}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{Waldo Images}
-\label{fig:waldo}
-\end{figure}	
-	
-	\item Convert Kernel and Scene to Grayscale
-	\item Find Dimensions of the Scene and Kernel
-	\item Divide Kernel in Half so that we work with a smaller kernel size.
-	\item Calculate Correlation or Convolution.
-	\item Find Waldo by locating the highest value point in the $G$ Matrix.
-	\item Display Original Scene with Kernel superimposed on Waldo's location.
+	\item Itemss
 
 \end{itemize}
 
-\subsection{Correlation}
-The following pseudocode is the process for calculating Correlation:
-
-\begin{itemize}
-	\item Find the dimensions for the scene and kernel
-	\item Set H = kernel, F = scene, G = result so that program matches formulas above
-	\item Divide Kernel so that we work with a smaller kernel size.
-	\item Generate Mean for Scene and Kernel
-	\item Perform Correlation by applying the weighted kernel value to each pixel in the image.
-\end{itemize}
-
-The resultant $G$ Matrix generated by the correlation function yields the 3D surface mapping found in Figure~\ref{fig:surf}.
-
-
+%FIGURE EXAMPLE
 \begin{figure}
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -290,43 +250,7 @@ The resultant $G$ Matrix generated by the correlation function yields the 3D sur
 \label{fig:surf}
 \end{figure}
 
-The image displayed in Figure~\ref{fig:subguess} is the scene after the correlation filter is applied. A noticeable peak is observed in the image, which will be used as a guess for Waldo's Location. Using the x,y coordinates of that peak, we can now superimpose the kernel onto the original image, as shown in Figure~\ref{fig:subsolve}.
 
-\begin{figure}
-\centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=.95\linewidth]{img/guess}
-  \caption{Image after applying Correlation}
-  \label{fig:subguess}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=.95\linewidth]{img/WaldoSolved}
-  \caption{Kernel superimposed onto original scene.}
-  \label{fig:subsolve}
-\end{subfigure}
-\caption{Finding Waldo}
-\label{fig:soln}
-\end{figure}
-
-
-\subsection{Convolution}
-As stated earlier, Convolution is done similarly to Correlation. However, the resultant image returned from performing Convolution (Figure~\ref{fig:bad}) did not produce the same accurate guess for Waldo's location that was observed in the Correlation equation.
-
-
-\begin{figure}
-\centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1\linewidth]{img/guessBad}
-  \caption{Image after applying Correlation}
-
-\end{subfigure}%
-
-\caption{Image after applying Convolution}
-\label{fig:bad}
-\end{figure}
 
 
 
@@ -335,8 +259,7 @@ As stated earlier, Convolution is done similarly to Correlation. However, the re
 The Matlab Code for the program attached after the conclusion of this Homework Document.
 
 \section{Conclusion}
-This assignment was a study in utilizing template matching to discover similar features between two images. This was done by writing Matlab functions to perform correlation and convolution.\\
-Correlation and Convolution are two different methods for filtering discussed and examined during this homework assignment. Correlation worked well as the Waldo search algorithm because the formula focuses on finding the similarities between two matrices. On the other hand, the convolution formula did not work well for finding Waldo, as convolution is more useful in discovering how two matrices differ from one another.
+Conclude here
 
 
 
@@ -358,120 +281,230 @@ Correlation and Convolution are two different methods for filtering discussed an
 }
 
 \clearpage
-\begin{lstlisting}[caption = {Where's Waldo Script}]
-function wheres_waldo()
-    %%Read in Kernel, convert to grayscale double. Save original copy.
-    kernel = imread('WaldoKernel.png');
-    orig_kern = kernel;
-    kernel = rgb2gray(kernel);
-    kernel = im2double(kernel);
+\begin{lstlisting}[caption = {Main Script}]
+function edge()
 
-    %%Read in Scene, convert to grayscale double. Save original copy.
-    scene = imread('WaldoScene.png');
-    orig_scene = scene;
-    scene = rgb2gray(scene);
-    scene = im2double(scene);
+    clc
+    close all
 
-    %%Find the dimensions for the scene and kernel
-    [kH, kW] = size(kernel);
-    [sH, sW] = size(scene);
+    %Image Files
+    f1 = 'angry.png';
+    f2 = 'bike.jpg';
+    f3 = 'real.png';
+    f4 = 'wolf.jpg'; 
+    f5 = 'zooey.jpg';
     
-     %%Divide Kernel Height and Width
-    kH = kH/2;
-    kW = kW/2;
-    
-    %%Calculate Correlation
-    G =  correlation( scene, kernel );
-    %%OR you can do convolution...
-    %%G =  convolution( scene, kernel );
-    %%Actually don't because convlution is trash for this program...
+    %KERNEL methods
+    rob = 'ROBERTS';
+    pre = 'PREWITT';
+    sob = 'SOBEL';
+    iso = 'ISOTROPIC';
+    gau = 'GAUSSIAN';
+  
+    %Convert each image to grayscale doubles
+    %See prepimage() function below
+    [ img01, img01g ] = prepimage( f1 );
+    [ img02, img02g ] = prepimage( f2 );
+    [ img03, img03g ] = prepimage( f3 );
+    [ img04, img04g ] = prepimage( f4 );
+    [ img05, img05g ] = prepimage( f5 );
 
-    %%Find Waldo by finding the highest value point
-    [r,c] = find(G==max(G(:)));
+    %Generate Kernels
+    %See get_kernel() function below
+    [ k01x, k01y ] = get_kernel(rob); 
+    [ k02x, k02y ] = get_kernel(pre); 
+    [ k03x, k03y ] = get_kernel(sob); 
+    [ k04x, k04y ] = get_kernel(iso); 
+    [ k05x, k05y ] = get_kernel(gau, 0.8 ); 
 
-    %%Pad array so that the imposed image lines up properly
-    scene  = padarray(scene,[kH,kW]);
-    orig_kern = padarray(orig_kern,[r,c],'pre');
-    orig_kern = padarray(orig_kern,[sH-r,sW-c],'post');
+    %Generate Images (x derivative, y derivative, edge map)
+    %See get_edge() function below
+    [ map01x, map01y, edge01 ] = get_edge( img01g, k01x, k01y );
+    [ map02x, map02y, edge02 ] = get_edge( img02g, k02x, k02y );
+    [ map03x, map03y, edge03 ] = get_edge( img03g, k03x, k03y );
+    [ map04x, map04y, edge04 ] = get_edge( img04g, k04x, k04y );
+    [ map05x, map05y, edge05 ] = get_edge( img05g, k05x, k05y );
 
-    %%Show the Original Image
-    figure, imshow(orig_scene,[]);
-    title('Original Scene');
-
-    %%Show the surf Image
-    figure, surf(G), shading flat;
-    title('Quantized Samples');
-
-    %%Show the G matrix
-    figure, imshow(G,[]);
-    title('Waldo Guess location');
-
-    %%Show the Search Result
-    figure, imshowpair(scene(:,:,1),orig_kern,'blend');
-    title('Kernel Superimposed on Original Image');
+    %Display Images (original image, x derivative, y derivative, edge map)
+    %see genfigure() function below
+    genfigure( img01, map01x, map01y, edge01, rob);
+    genfigure( img02, map02x, map02y, edge02, pre);
+    genfigure( img03, map03x, map03y, edge03, sob);
+    genfigure( img04, map04x, map04y, edge04, iso);
+    genfigure( img05, map05x, map05y, edge05, strcat(gau, ' | SIGMA = 0.8'));
 
 end
 \end{lstlisting}
 
 \clearpage
 
+\begin{lstlisting}[caption = {Preparing Images}]
+function [ img, img_g ] = prepimage( file )
+    %Read in image, scale it down a bit, return colored img and grayscale
+    img = imread( file );
+    img = imresize( img, 0.8 );
+    img_g = rgb2gray( img );
+    img_g = double( img_g );
+end
+\end{lstlisting}
 
-\begin{lstlisting}[caption = {Correlation Function}]
-function [ G ] = correlation( scene, kernel )
+\clearpage
+
+\begin{lstlisting}[caption = {Generate Figures}]
+
+function genfigure( i, ix, iy, iedge, descr )
+
+    %Generate Images (original image, x derivative, y derivative, edge map)
+    set(gca,'LooseInset',get(gca,'TightInset'))
+
+    %Show images with appropriate descriptions
+    figure, imshow(i,[]);    
+    title(strcat('Original Image: ', descr));
+    
+    figure, imshow(ix,[]);    
+    title(strcat('X Derivative: ', descr));
+
+    figure, imshow(iy,[]);
+    title(strcat('Y Derivative: ', descr));
+
+    figure, imshow(iedge,[]);
+    title(strcat('Edges: ', descr));
+
+end
+
+\end{lstlisting}
+
+
+
+\begin{lstlisting}[caption = {Convolution}]
+function [ G ] = convolution( scene, kernel )
+    %%For Convolution, just Flip the filter in both directions
+    %%Then apply Correlation as before...
+    %%BTW rot90(x,2) is faster than flipud() + fliplr() which also works...
+    kernel = rot90(kernel,2);
+    
     %%Find the dimensions for the scene and kernel
     [kH, kW] = size(kernel);
     [sH, sW] = size(scene);
 
+    %Get Half-Dimensions of Kernel to determine padding on each side
+    kH2 = floor(kH / 2);
+    kW2 = floor(kW / 2);
+
+    %GENERATE HORIZONTAL PADDING
+    pad = zeros(kH2,sW);
+    %PAD TOP OF IMAGE
+    scene = vertcat(pad,scene);
+    %PAD BOTTOM OF IMAGE
+    scene = vertcat(scene,pad);
+    
+    %GENERATE VERTICAL PADDING
+    pad = zeros(sH + 2 * kH2,kW2);
+    %PAD LEFT SIDE OF IMAGE
+    scene = horzcat(pad,scene);
+    %PAD RIGHT SIDE OF IMAGE
+    scene = horzcat(scene,pad);
+
 
     %%set F, G, H matrices so that they match what's in the book.
-    G = scene;
+    G = double(zeros(sH, sW));
     F = scene;
     H = kernel;
 
-    %%Divide Kernel Height and Width so we work with a smaller kern
-    kH = kH/2;
-    kW = kW/2;
-
-    %%Generate Mean for Scene and Kernel
-    meanS = mean(mean(scene));
-    meanK = mean(mean(kernel));
-
-
-    %%Perform Correlation
-    for i=(kH):(sH-kH)
-        for j=(kW):(sW-kW)
-            G(i,j) = sum(sum((F(i-kH+1:i+kH, j-kW+1:j+kW)-meanS).*(H-meanK)));
+    %Calculate Correlation. Fixed so the summation appears closer to slides
+    for i = 1:sH
+        for j = 1:sW
+        total = 0;
+            for u = 1:kH
+                for v = 1:kW
+                    total = total + H(u,v) * F(i + u - 1,j + v - 1);
+                end
+            end
+            G(i,j) = total / (sH * sW * kH * kW);
         end
+    end
+    
+end
+\end{lstlisting}
+
+\begin{lstlisting}[caption = {Generate Kernel}]
+function [ Gx, Gy ] = get_kernel( kType, kSigma )
+    %Ensure first arg is always caps
+    kType = upper(kType);
+    
+    %Only Gaussian has kSigma
+    if nargin < 2
+       kSigma = 0;
+    end
+
+
+    
+    if strcmp( kType, 'ROBERTS')
+        %ROBERTS:
+        Gx = [  0  1  ;
+               -1  0 ];
+        Gy = [  1  0  ;
+                0 -1 ];
+        
+    else
+        %HANDLE THE OTHERS
+        if strcmp( kType, 'PREWITT')
+            %PREWITT:
+            p = 3;
+        
+        elseif strcmp( kType, 'SOBEL')
+            %SOBEL:
+            p = 4;
+        
+        elseif strcmp( kType, 'ISOTROPIC')
+            %ISOTROPIC:
+            p = 2 + sqrt(2);
+
+        elseif strcmp( kType, 'GAUSSIAN')
+            %GAUSSIAN:
+            p =  2 * pi * ( kSigma * kSigma ) ;
+       
+        end
+        
+        if strcmp( kType, 'GAUSSIAN')
+        %Gradient Kernel Family used for Gaussian:
+        GradKernX = [   -1    0    1   ;
+                        -1    0    1   ;
+                        -1    0    1  ];
+
+        GradKernY = [   -1   -1   -1   ;
+                         0    0    0   ;
+                         1    1    1  ];                     
+        else
+        %Gradient Kernel Family used for Prewitt, Sobel, Iso:
+        GradKernX = [   -1    0    1   ;
+                        2-p   0   p-2  ;
+                        -1    0    1  ];
+
+        GradKernY = [   -1   2-p  -1   ;
+                         0    0    0   ;
+                         1   p-2   1  ];            
+        end
+
+        %Apply finite difference kernels
+        Gx = (1/p) * GradKernX;
+        Gy = (1/p) * GradKernY;
+        
     end
 end
 \end{lstlisting}
 
-\begin{lstlisting}[caption = {Convolution Function}]
-    %%For Convolution, just Flip the filter in both directions
-    kernel = rot90(kernel,2);
-    [kH, kW] = size(kernel);
-    [sH, sW] = size(scene);
 
-    G = scene;
-    F = scene;
-    H = kernel;
-
-    kH = kH/2;
-    kW = kW/2;
-
-    meanS = mean(mean(scene));
-    meanK = mean(mean(kernel));
-
-    %%Perform Correlation
-    for i=(kH):(sH-kH)
-        for j=(kW):(sW-kW)
-            G(i,j) = sum(sum((F(i-kH+1:i+kH, j-kW+1:j+kW)-meanS).*(H-meanK)));
-        end
-    end
+\begin{lstlisting}[caption = {Generate Edge Map}]
+function [ derX, derY, edge ] = get_edge( image, kernX, kernY )
+    %Generate X Derivative Map through convolution
+    derX = convolution( image, kernX );
+    %Generate Y Derivative Map through convolution
+    derY = convolution( image, kernY );
+    %Generate Edge Map through gradient magnitude
+    edge = sqrt(derX.^2 + derY.^2);
 end
 \end{lstlisting}
-
-
 \end{homeworkProblem}
 \clearpage
 
