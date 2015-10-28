@@ -210,10 +210,10 @@ with a specified kernel, in this homework you will develop a function to compute
 image. Your function will take as input an image and a kernel and output an edge map of the input
 image. You may want to create a second function to return the kernel based on use input (i.e., Roberts,
 Sobel, Prewet, and Gaussian). In addition, you will want your output image to be the same size as the
-input image, therefore, you’ll need to deal with the edges accordingly and document in your write-up.
+input image, therefore, you'll need to deal with the edges accordingly and document in your write-up.
 
 \section{Preface}
-Preface Text
+In the previous program, we examined how using correlation could be utilized to find similarities between an image and a kernel. In this assignment, convolution is used to find differences between images and a kernel. These differences in images can be used to generate what is known as an edge map. Edges arise from various reasons in images. Edges can be seen in changes of reflectance or texture, changes in surface orientation, or even in cast shadows. In a perfect world, edges are used to determine depth discontinuity and identify object boundaries. 
 
 \section{Equations}
 This assignment once again utilizes the Convolution equation. \\ \\
@@ -221,33 +221,270 @@ This assignment once again utilizes the Convolution equation. \\ \\
 \textbf{Convolution:} $$G\Big[ i , j \Big] = \sum\limits_{u=-k}^{k} \sum\limits_{v=-k}^{k} H\Big[ u , v \Big]F\Big[ i - u , j - v \Big]$$ \\
 
 Where $F$ is the image and $H$ is the kernel. \\ 
-Convolution can actually be performed using Correlation. Flip the kernel in both directions (or rotate the kernel 180\degree), then apply correlation.
+Convolution can actually be performed using Correlation. Flip the kernel in both directions (or rotate the kernel 180\degree), then apply correlation. \\
+
+
+In this assignment, finite difference kernels are also utilized. The following family of gradient kernels, also known as a mask, will be used for this program:
+
+ $$G_{x} = 
+ \begin{bmatrix}
+-1 & 0 & 1 \\
+2 - p & 0 & p - 2 \\
+-1 & 0 & 1 \\
+\end{bmatrix}$$
+
+ $$G_{y} = 
+ \begin{bmatrix}
+-1 & 2 - p & -1 \\
+0 & 0 & 0 \\
+1 & p - 2 & 1 \\
+\end{bmatrix}$$
+
+Where $p$ varies based on the type of kernel being used:
+
+$$
+\begin{tabular}{ | l | c | c | r |}
+   \hline
+   & Prewitt & Sobel & Isotropic \\
+  \hline
+  \hline
+  $p$ & $3$ & $4$ & $2 + \sqrt{2}$  \\
+  \hline
+
+\end{tabular}
+$$ \\
+
+
+Finally, in order to generate the edge map, the gradient magnitude formula will be used.
+
+$$
+   \mid \mid \bigtriangledown f \mid \mid = \sqrt{ (\frac{\delta f}{\delta x})^{2} + (\frac{\delta f}{\delta y})^{2} }
+$$ 
+
+Where $\frac{\delta f}{\delta x})$ is the $x$ derivative map generated from the  $G_{x}$ gradient, and  $\frac{\delta f}{\delta y})$ is the $y$ derivative map generated from the  $G_{y}$ gradient.
 
 \section{Process}
 
 The following is the process used to find the edges.
 \begin{itemize}
-	\item Itemss
-
+	\item Read in the image.
+	\item Convert image to grayscale double.
+	\item Determine kernel used for edge detection (Roberts, Sobel, Prewitt, or Gaussian)
+	\item Calculate x derivative and y derivative from kernels using Convolution:
+	\begin{itemize}
+		\item Rotate kernel by 180 degrees.
+		\item Pad image edges to retain appropriate dimensions (see Image Padding subsection)
+		\item Perform Correlation
+	\end{itemize}
+	\item Generate Edge Map by using gradient magnitude.
 \end{itemize}
 
-%FIGURE EXAMPLE
-\begin{figure}
-\centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=.9\linewidth]{img/surf1}
-  \caption{3D Surface Graph.}
-  \label{fig:sub1}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=.9\linewidth]{img/surf2}
-  \caption{Top-Down View.}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{3D surface of image after applying correlation}
-\label{fig:surf}
+\subsection{Image Padding}
+Image padding is required for applying the kernel to the input image. In order to do this, we'll use the functions $vertcat()$ and $horzcat()$. The $vertcat()$ method will put horizontal bars on the top and bottom of the image, and $horzcat()$ will put vertical bars on the left and the right of the image. The kernel size is used to determine the size of the horizontal and vertical bars that are added to the image. Refer to Line 15 in Listing 5 (the Convolution function) for a representation of how $horzcat()$ and $vertcat()$ are utilized to add the padding.
+
+
+\section{Matlab}
+The Matlab Code for the program attached after the conclusion of this Homework Document.
+
+\section{Conclusion}
+This assignment covers the utility of convolution in detecting edges in images. The real-world applications of this skill are wide spread. In computer vision, the ability to discern edges in a scene can allow a computer to have a better spacial understanding of a given area. The different kernels used to create the edge maps are shown on the following pages, as well as the x and y derivative images.
+
+
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/rob1x}
+		  \caption{X Derivative}
+		  \label{fig:robX}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/rob2y}
+		  \caption{Y Derivative}
+		  \label{fig:robY}
+	\end{subfigure}
+	\caption{Derivative Maps Using Roberts}
+	\label{fig:rob1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/rob0orig}
+		  \caption{Original Image}
+		  \label{fig:robOrig}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/rob3edge}
+		  \caption{Edge Map}
+		  \label{fig:robEdge}
+	\end{subfigure}
+	\caption{Edge Detection Using Roberts}
+	\label{fig:rob2}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/pre1x}
+		  \caption{X Derivative}
+		  \label{fig:preX}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/pre2y}
+		  \caption{Y Derivative}
+		  \label{fig:preY}
+	\end{subfigure}
+	\caption{Derivative Maps Using Prewitt}
+	\label{fig:pre1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/pre0orig}
+		  \caption{Original Image}
+		  \label{fig:preOrig}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/pre3edge}
+		  \caption{Edge Map}
+		  \label{fig:preEdge}
+	\end{subfigure}
+	\caption{Edge Detection Using Prewitt}
+	\label{fig:pre2}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/sob1x}
+		  \caption{X Derivative}
+		  \label{fig:sobX}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/sob2y}
+		  \caption{Y Derivative}
+		  \label{fig:sobY}
+	\end{subfigure}
+	\caption{Derivative Maps Using Sobel}
+	\label{fig:sob1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/sob0orig}
+		  \caption{Original Image}
+		  \label{fig:sobOrig}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/sob3edge}
+		  \caption{Edge Map}
+		  \label{fig:sobEdge}
+	\end{subfigure}
+	\caption{Edge Detection Using Sobel}
+	\label{fig:sob2}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/iso1x}
+		  \caption{X Derivative}
+		  \label{fig:isoX}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/iso2y}
+		  \caption{Y Derivative}
+		  \label{fig:isoY}
+	\end{subfigure}
+	\caption{Derivative Maps Using Isotropic}
+	\label{fig:iso1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/iso0orig}
+		  \caption{Original Image}
+		  \label{fig:isoOrig}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/iso3edge}
+		  \caption{Edge Map}
+		  \label{fig:isoEdge}
+	\end{subfigure}
+	\caption{Edge Detection Using Isotropic}
+	\label{fig:iso2}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/gauss1x}
+		  \caption{X Derivative}
+		  \label{fig:gaussX}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/gauss2y}
+		  \caption{Y Derivative}
+		  \label{fig:gaussY}
+	\end{subfigure}
+	\caption{Derivative Maps Using Gaussian}
+	\label{fig:gauss1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/gauss0orig}
+		  \caption{Original Image}
+		  \label{fig:gaussOrig}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		  \centering
+		  \includegraphics[width=1\linewidth]{img/gauss3edge}
+		  \caption{Edge Map}
+		  \label{fig:gaussEdge}
+	\end{subfigure}
+	\caption{Edge Detection Using Gaussian}
+	\label{fig:gauss2}
 \end{figure}
 
 
@@ -255,11 +492,6 @@ The following is the process used to find the edges.
 
 
 
-\section{Matlab}
-The Matlab Code for the program attached after the conclusion of this Homework Document.
-
-\section{Conclusion}
-Conclude here
 
 
 
@@ -348,7 +580,6 @@ function [ img, img_g ] = prepimage( file )
 end
 \end{lstlisting}
 
-\clearpage
 
 \begin{lstlisting}[caption = {Generate Figures}]
 
@@ -375,6 +606,18 @@ end
 \end{lstlisting}
 
 
+\begin{lstlisting}[caption = {Generate Edge Map}]
+function [ derX, derY, edge ] = get_edge( image, kernX, kernY )
+    %Generate X Derivative Map through convolution
+    derX = convolution( image, kernX );
+    %Generate Y Derivative Map through convolution
+    derY = convolution( image, kernY );
+    %Generate Edge Map through gradient magnitude
+    edge = sqrt(derX.^2 + derY.^2);
+end
+\end{lstlisting}
+
+\clearpage
 
 \begin{lstlisting}[caption = {Convolution}]
 function [ G ] = convolution( scene, kernel )
@@ -427,43 +670,36 @@ function [ G ] = convolution( scene, kernel )
 end
 \end{lstlisting}
 
+\clearpage
+
 \begin{lstlisting}[caption = {Generate Kernel}]
 function [ Gx, Gy ] = get_kernel( kType, kSigma )
     %Ensure first arg is always caps
     kType = upper(kType);
-    
     %Only Gaussian has kSigma
     if nargin < 2
        kSigma = 0;
     end
-
-
-    
     if strcmp( kType, 'ROBERTS')
         %ROBERTS:
         Gx = [  0  1  ;
                -1  0 ];
         Gy = [  1  0  ;
-                0 -1 ];
-        
+                0 -1 ];  
     else
         %HANDLE THE OTHERS
         if strcmp( kType, 'PREWITT')
             %PREWITT:
             p = 3;
-        
         elseif strcmp( kType, 'SOBEL')
             %SOBEL:
             p = 4;
-        
         elseif strcmp( kType, 'ISOTROPIC')
             %ISOTROPIC:
             p = 2 + sqrt(2);
-
         elseif strcmp( kType, 'GAUSSIAN')
             %GAUSSIAN:
             p =  2 * pi * ( kSigma * kSigma ) ;
-       
         end
         
         if strcmp( kType, 'GAUSSIAN')
@@ -471,7 +707,6 @@ function [ Gx, Gy ] = get_kernel( kType, kSigma )
         GradKernX = [   -1    0    1   ;
                         -1    0    1   ;
                         -1    0    1  ];
-
         GradKernY = [   -1   -1   -1   ;
                          0    0    0   ;
                          1    1    1  ];                     
@@ -480,7 +715,6 @@ function [ Gx, Gy ] = get_kernel( kType, kSigma )
         GradKernX = [   -1    0    1   ;
                         2-p   0   p-2  ;
                         -1    0    1  ];
-
         GradKernY = [   -1   2-p  -1   ;
                          0    0    0   ;
                          1   p-2   1  ];            
@@ -489,22 +723,11 @@ function [ Gx, Gy ] = get_kernel( kType, kSigma )
         %Apply finite difference kernels
         Gx = (1/p) * GradKernX;
         Gy = (1/p) * GradKernY;
-        
     end
 end
 \end{lstlisting}
 
 
-\begin{lstlisting}[caption = {Generate Edge Map}]
-function [ derX, derY, edge ] = get_edge( image, kernX, kernY )
-    %Generate X Derivative Map through convolution
-    derX = convolution( image, kernX );
-    %Generate Y Derivative Map through convolution
-    derY = convolution( image, kernY );
-    %Generate Edge Map through gradient magnitude
-    edge = sqrt(derX.^2 + derY.^2);
-end
-\end{lstlisting}
 \end{homeworkProblem}
 \clearpage
 
