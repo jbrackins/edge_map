@@ -261,7 +261,7 @@ $$
    \mid \mid \bigtriangledown f \mid \mid = \sqrt{ (\frac{\delta f}{\delta x})^{2} + (\frac{\delta f}{\delta y})^{2} }
 $$ 
 
-Where $\frac{\delta f}{\delta x})$ is the $x$ derivative map generated from the  $G_{x}$ gradient, and  $\frac{\delta f}{\delta y})$ is the $y$ derivative map generated from the  $G_{y}$ gradient.
+Where $(\frac{\delta f}{\delta x})$ is the $x$ derivative map generated from the  $G_{x}$ gradient, and  $(\frac{\delta f}{\delta y})$ is the $y$ derivative map generated from the  $G_{y}$ gradient.
 
 \section{Process}
 
@@ -666,7 +666,6 @@ function [ G ] = convolution( scene, kernel )
             G(i,j) = total / (sH * sW * kH * kW);
         end
     end
-    
 end
 \end{lstlisting}
 
